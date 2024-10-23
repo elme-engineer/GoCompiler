@@ -1,20 +1,6 @@
-STRLIT("str1")
+Line 1, column 14: invalid escape sequence (\c)
+STRLIT("ola")
 SEMICOLON
-STRLIT("str2")
-SEMICOLON
-IDENTIFIER(str4)
-IDENTIFIER(str5)
-SEMICOLON
-IDENTIFIER(str6)
-DIV
-IDENTIFIER(str9)
-IDENTIFIER(str13)
-Line 10, column 1: unrecognized character (")
-IDENTIFIER(str14)
-IDENTIFIER(str15)
-STRLIT("str16")
-SEMICOLON
-IDENTIFIER(str18)
-IDENTIFIER(str19)
-SEMICOLON
-Line 16, column 17: unterminated comment
+Line 4, column 1: unterminated string literal
+Line 4, column 1: invalid octal constant (008)
+Line 5, column 6: unterminated string literal
