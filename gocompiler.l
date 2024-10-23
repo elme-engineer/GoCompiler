@@ -70,8 +70,8 @@ SEMICOLON		    ";"
 ws [\t ]
 newline \n|\r\n|\r
 reserved "++"|"--"|break|case|chan|const|continue|default|defer|else|fallthrough|for|func|go|goto|if|import|interface|map|package|range|return|select|struct|switch|type|var
-
-%x LCOMMENT BCOMMENT
+%option yylineno
+%x LCOMMENT BCOMMENT BADSTR
 %%
 
 "/*"				            { BEGIN (BCOMMENT); errorColumn = column_counter; column_counter += yyleng; errorLine = line_counter; }
@@ -87,8 +87,12 @@ reserved "++"|"--"|break|case|chan|const|continue|default|defer|else|fallthrough
 {ws}                            {column_counter += yyleng;}
 {newline}                       {column_counter = 1; line_counter += 1; if(semicolon){semicolon = 0; printf("SEMICOLON\n");};}
 
+
+\"				                {errorColumn = column_counter; column_counter += yyleng; errorLine = line_counter; BEGIN(BADSTR);}
+
 {INTEGER}                       { {printf("NATURAL(%s)\n", yytext);}; semicolon = 1; column_counter += yyleng;}
 {OCTAL}                         { {printf("NATURAL(%s)\n", yytext);}; semicolon = 1; column_counter += yyleng;}
+0[0-9]*                         { fprintf(stdout, "Line %d, column %d: invalid octal constant (%s)\n", line_counter, column_counter, yytext); column_counter += yyleng;}
 {HEX}                           { {printf("NATURAL(%s)\n", yytext);}; semicolon = 1; column_counter += yyleng;}
 {DECIMAL}                       { {printf("DECIMAL(%s)\n", yytext);}; semicolon = 1; column_counter += yyleng;}
 {STRLIT}                        { {printf("STRLIT(%s)\n", yytext);}; semicolon = 1; column_counter += yyleng;}
@@ -136,25 +140,27 @@ reserved "++"|"--"|break|case|chan|const|continue|default|defer|else|fallthrough
 {IF}                            { {printf("IF\n");}; semicolon = 0; column_counter += yyleng; }
 {RETURN}                        { {printf("RETURN\n");}; semicolon = 1; column_counter += yyleng;}
 
+{reserved}                      {fprintf(yyout, "RESERVED(%s)\n", yytext); semicolon = 0; column_counter += yyleng;}
+
 {IDENTIFIER}	                { {printf("IDENTIFIER(%s)\n", yytext);} semicolon = 1; column_counter += yyleng; }
 
+.                               { printf("Line %d, column %d: illegal character (%s)\n", line_counter, column_counter, yytext); column_counter += yyleng;}
+
+<BADSTR>\\				        {errorColumn++; fprintf(stdout, "Line %d, column %d: invalid escape sequence (\\)\n", errorLine, errorColumn);}
+<BADSTR>\\[fnrt\\\"]	        {errorColumn += 2;}
+<BADSTR>\\.				        {errorColumn++; fprintf(stdout, "Line %d, column %d: invalid escape sequence (%s)\n", errorLine, errorColumn++, yytext);}
+<BADSTR>\"				        {column_counter = errorColumn + 2; errorColumn = 1; BEGIN 0;}
+<BADSTR>{newline}		        {fprintf(stdout, "Line %d, column %d: unterminated string literal\n", errorLine, column_counter - 1); column_counter = 1; line_counter++;BEGIN 0;}
+<BADSTR><<EOF>>			        {fprintf(stdout, "Line %d, column %d: unterminated string literal\n", errorLine, column_counter-1); yyterminate();}
+<BADSTR>.				        {++errorColumn;}
 
 
-'(\\.|[^\\\n'])*'           						{ printf("Line %d, column %d: unterminated string literal (%s)\n", line_counter, column_counter, yytext); column_counter += yyleng;}
-'(([^\\\n']|\\.)*|\\+)\\?{newline}                  { printf("Line %d, column %d: unterminated string literal\n", line_counter, column_counter); column_counter = 1; line_counter += 1;}
-<<EOF>>                                             { YY_USER_ACTION; if(semicolon){semicolon = 0; printf("SEMICOLON\n");}; column_counter += yyleng; return 0;}
-.                               { printf("Line %d, column %d: unrecognized character (%s)\n", line_counter, column_counter, yytext); column_counter += yyleng; semicolon = 0; }
+<INITIAL><<EOF>>	            {if (semicolon) {semicolon = 0; fprintf(yyout, "SEMICOLON\n");} yyterminate();}
+
 
 %%
 extern int yylex();
 int main() {
     yylex();    /* run the lexical analysis automaton i*/
     return 0;
-}
-
-
-void yyerror (const char *s){
-    errors++;
-    printf("Line %d, column %d: %s: %s\n", syn_line, syn_column, s, yytext);
-
 }
