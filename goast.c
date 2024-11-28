@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "ast.h"
+#include "goast.h"
 
 // create a node of a given category with a given lexical symbol
 struct node *newnode(enum category category, char *token) {
@@ -47,17 +47,42 @@ char *category_name[] = names;
 
 // traverse the AST and print its content
 void show(struct node *node, int depth) {
+    if (node == NULL){
+        return;
+    } 
     int i;
     for(i = 0; i < depth; i++)
-        printf("__");
-    if(node->token == NULL)
-        printf("%s\n", category_name[node->category]);
-    else
+        printf("..");
+
+    if(node->token == NULL){
+        printf("%s\n", category_name[node->category]);       
+    }      
+    else{
+
         printf("%s(%s)\n", category_name[node->category], node->token);
+    }
+    
     struct node_list *child = node->children;
-    while((child = child->next) != NULL)
+    while(child != NULL){
+
         show(child->node, depth+1);
+        child = child->next;
+    }
 }
+
+void adoptChildren(struct node *newFather, struct node *sourceNode){
+
+    struct node_list *child = sourceNode->children;
+    struct node_list *next;
+    while (child!=NULL) {
+        next = child->next;
+        addchild(newFather, child->node);
+        free(child);
+        child = next;
+    }
+    free(sourceNode);
+}
+
 
 // free the AST
 void deallocate(struct node *node) {

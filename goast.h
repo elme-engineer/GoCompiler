@@ -3,7 +3,7 @@
 
 // the order of the enum and the #define must precisely match
 enum category {  Program,   Function,   Parameters,   Parameter,   Arguments,   Integer,   Identifier,
-                Natural,   Decimal,   Strlit, Call,   Var,  Int,  Float32, Bool, String, If,  Else, For, Plus,   Minus,   Star,   Div , Mod , Not, Or, And, Lt, Gt, Eq, Ne, Le, Ge, Not, Blankid, Package, Print, Parseint, Func, Cmdargs, Return, Lbrace, Lsq, Lpar, Rbrace, Rpar, Rsq, Assign, Comma, Semicolon, Reserved};
+                Natural,   Decimal,   Strlit, Call,   Var,  Int,  Float32, Bool, String, If,  Else, For, Plus,   Minus,   Star,   Div , Mod , Or, And, Lt, Gt, Eq, Ne, Le, Ge, Not, Blankid, Package, Print, Parseint, Func, Cmdargs, Return, Lbrace, Lsq, Lpar, Rbrace, Rpar, Rsq, Assign, Comma, Semicolon, Reserved};
 #define names { "Program", "Function", "Parameters", "Parameter", "Arguments", "Integer", "Identifier", "Natural", "Decimal", "Strlit","Call", "Var", "Int", "Float32", "Bool", "String", "If", "Else", "For", "Plus", "Minus", "Star", "Div", "Mod", "Not", "Or", "And", "Lt", "Gt", "Eq", "Ne", "Le", "Ge", "Not", "Blankid", "Package", "Print", "Parseint", "Func", "Cmdargs", "Return", "Lbrace", "Lsq", "Lpar", "Rbrace", "Rpar", "Rsq", "Assign", "Comma", "Semicolon", "Reserved"}
 
 enum type {integer_type, double_type, no_type};
@@ -25,6 +25,7 @@ struct node_list {
 
 struct node *newnode(enum category category, char *token);
 void addchild(struct node *parent, struct node *child);
+void adoptChildren(struct node *newFather, struct node *sourceNode);
 struct node *getchild(struct node *parent, int position);
 int countchildren(struct node *node);
 void show(struct node *root, int depth);
