@@ -2,6 +2,10 @@
 #include <stdio.h>
 #include "goast.h"
 
+// WORK DONE BY:
+// Pedro Bento 2021219351
+// Ines Mendes 2017263654
+
 // create a node of a given category with a given lexical symbol
 struct node *newnode(enum category category, char *token) {
     struct node *new = malloc(sizeof(struct node));
@@ -37,8 +41,11 @@ struct node *getchild(struct node *parent, int position) {
 // count the children of a node
 int countchildren(struct node *node) {
     int i = 0;
-    while(getchild(node, i) != NULL)
+    struct node_list *temp = node->children;
+    while (temp->next != NULL){
         i++;
+        temp = temp->next;
+    }
     return i;
 }
 
@@ -72,15 +79,14 @@ void show(struct node *node, int depth) {
 
 void adoptChildren(struct node *newFather, struct node *sourceNode){
 
-    struct node_list *child = sourceNode->children;
-    struct node_list *next;
-    while (child!=NULL) {
-        next = child->next;
-        addchild(newFather, child->node);
-        free(child);
-        child = next;
+    struct node_list *aux_children = sourceNode->children;
+    struct node_list *parent_children = newFather->children;
+
+    while (parent_children->next != NULL)
+    {
+        parent_children = parent_children->next;
     }
-    free(sourceNode);
+    parent_children->next = aux_children->next;
 }
 
 

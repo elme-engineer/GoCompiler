@@ -1,5 +1,9 @@
 %{
 
+// WORK DONE BY:
+// Pedro Bento 2021219351
+// Ines Mendes 2017263654
+
 #include "y.tab.h"
 #include "goast.h"
 
@@ -180,18 +184,22 @@ int main(int argc, char*argv[]) {
         else if(strcmp(argv[1], "-t") == 0){
             lex = 0;
             yacc = 1;
+
+            #ifdef DEBUG
+                yydebug = 1;
+            #endif
+            yyparse();
+
+            if(errors == 0){
+                show(program, 0);
+    }
         }
         
     }
 
-    #ifdef DEBUG
-        yydebug = 1;
-    #endif
-    yyparse();
     
-    if(errors == 0){
-        show(program, 0);
-    }
+    
+    
     
     return 0;
 

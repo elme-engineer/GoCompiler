@@ -1,10 +1,14 @@
 #ifndef _AST_H
 #define _AST_H
 
+// WORK DONE BY:
+// Pedro Bento 2021219351
+// Ines Mendes 2017263654
+
 // the order of the enum and the #define must precisely match
-enum category {  Program,   Function,   Parameters,   Parameter,   Arguments,   Integer,   Identifier,
-                Natural,   Decimal,   Strlit, Call,   Var,  Int,  Float32, Bool, String, If,  Else, For, Plus,   Minus,   Star,   Div , Mod , Or, And, Lt, Gt, Eq, Ne, Le, Ge, Not, Blankid, Package, Print, Parseint, Func, Cmdargs, Return, Lbrace, Lsq, Lpar, Rbrace, Rpar, Rsq, Assign, Comma, Semicolon, Reserved};
-#define names { "Program", "Function", "Parameters", "Parameter", "Arguments", "Integer", "Identifier", "Natural", "Decimal", "Strlit","Call", "Var", "Int", "Float32", "Bool", "String", "If", "Else", "For", "Plus", "Minus", "Star", "Div", "Mod", "Not", "Or", "And", "Lt", "Gt", "Eq", "Ne", "Le", "Ge", "Not", "Blankid", "Package", "Print", "Parseint", "Func", "Cmdargs", "Return", "Lbrace", "Lsq", "Lpar", "Rbrace", "Rpar", "Rsq", "Assign", "Comma", "Semicolon", "Reserved"}
+enum category {  Program,   VarDecl,   FuncDecl,   FuncHeader,   FuncParams, ParamDecl, ParseArgs, FuncBody, Integer,   Identifier,
+                Natural,   Decimal,   StrLit, Call,   Var,  Int,  Float32, Bool, String, If,  Else, For, Plus, Minus, Add,   Sub,   Mul,   Div , Mod , Or, And, Lt, Gt, Eq, Ne, Le, Ge, Not, Blankid, Package, Print, Parseint, Func, Cmdargs, Return, Lbrace, Lsq, Lpar, Rbrace, Rpar, Rsq, Assign, Comma, Semicolon, Reserved, AuxNode, Block};
+#define names { "Program", "VarDecl", "FuncDecl", "FuncHeader", "FuncParams", "ParamDecl","ParseArgs", "FuncBody","Integer", "Identifier", "Natural", "Decimal", "StrLit","Call", "Var", "Int", "Float32", "Bool", "String", "If", "Else", "For", "Plus", "Minus", "Add", "Sub", "Mul", "Div", "Mod", "Or", "And", "Lt", "Gt", "Eq", "Ne", "Le", "Ge", "Not", "Blankid", "Package", "Print", "Parseint", "Func", "Cmdargs", "Return", "Lbrace", "Lsq", "Lpar", "Rbrace", "Rpar", "Rsq", "Assign", "Comma", "Semicolon", "Reserved", "AuxNode", "Block"}
 
 enum type {integer_type, double_type, no_type};
 #define type_name(type) (type == integer_type ? "integer" : (type == double_type ? "double" : "none"))
